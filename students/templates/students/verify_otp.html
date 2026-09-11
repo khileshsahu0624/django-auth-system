@@ -1,0 +1,24 @@
+{% extends 'students/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Verify OTP</h4>
+            </div>
+            <div class="card-body">
+                <p>An OTP has been sent. Please check your console/terminal and enter it below.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Enter 6-Digit OTP</label>
+                        <input type="text" name="otp" class="form-control" maxlength="6" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Verify & Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

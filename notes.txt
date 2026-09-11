@@ -1,0 +1,31 @@
+Developer Notes & Important Information
+=======================================
+
+1. Custom User Model (`accounts.User`)
+--------------------------------------
+The project uses a custom `User` model inheriting from Django's `AbstractUser`. 
+Because a custom user model is used, it's CRITICAL to ensure that `AUTH_USER_MODEL = 'accounts.User'` is set in `settings.py` before the very first database migration is ever applied. If standard Django migrations (like `admin` and `auth`) run *before* the custom model is registered, it creates an `InconsistentMigrationHistory` error. If this happens, the cleanest fix during development is to drop the database, delete all app migrations (except `__init__.py`), and re-run `makemigrations` and `migrate`.
+
+2. Role-Based Access Control (RBAC) Logic
+-----------------------------------------
+- Roles are defined via `models.TextChoices` in the `User` model (`SUPER_ADMIN`, `ADMIN`, `USER`).
+- The `User.save()` method is overridden:
+  - `SUPER_ADMIN` gets `is_staff=True` and `is_superuser=True`.
+  - `ADMIN` gets `is_staff=True` and `is_superuser=False`.
+  - `USER` gets neither.
+- Route protection is handled by a custom decorator `@admin_required` located in `accounts/decorators.py`. It explicitly checks the string value of the role.
+- UI protection in templates is handled via simple conditional statements (e.g., `{% if request.user.role == 'SUPER_ADMIN' or request.user.role == 'ADMIN' %}`).
+
+3. OTP Flow & Security
+----------------------
+- The traditional password flow is entirely bypassed in the `login_view`.
+- When a username is submitted, a 6-digit random string is generated and stored in the database alongside a `timezone.now()` timestamp.
+- The user is placed into a pending state using `request.session['auth_username'] = username`.
+- The `verify_otp` view calculates the time difference. If the current time is greater than the creation time by 300 seconds (5 minutes), the login is rejected.
+- Because we bypass `authenticate()`, we must explicitly log the user in using `login(request, user, backend='django.contrib.auth.backends.ModelBackend')`.
+
+4. Future Improvements
+----------------------
+- Integration with an email service like SendGrid, or an SMS gateway like Twilio, to replace the `print()` statement in `views.py`.
+- Adding a "Resend OTP" button and route to invalidate the old OTP and issue a new one.
+- Adding rate limiting to the OTP generation to prevent spam attacks.
