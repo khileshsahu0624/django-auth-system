@@ -1,24 +1,32 @@
-{% extends 'students/base.html' %}
+{% extends 'students/auth_base.html' %}
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Verify OTP</h4>
-            </div>
-            <div class="card-body">
-                <p>An OTP has been sent. Please check your console/terminal and enter it below.</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label">Enter 6-Digit OTP</label>
-                        <input type="text" name="otp" class="form-control" maxlength="6" required>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Verify & Login</button>
-                </form>
-            </div>
-        </div>
+{% block auth_content %}
+<div id="step2">
+  <a class="back-link" href="{% url 'login' %}">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back
+  </a>
+  <div class="form-top">
+    <span class="step-tag">STEP 2 OF 2</span>
+    <h2>Enter verification code</h2>
+    <p>We've sent a 6-digit code to your terminal console.</p>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label>Enter 6-Digit OTP</label>
+      <div class="input-shell focused">
+        <input type="text" name="otp" placeholder="Enter OTP" maxlength="6" required style="letter-spacing: 5px; font-weight: bold; text-align: center;">
+      </div>
     </div>
+
+    <button type="submit" class="btn-primary">
+      Verify &amp; continue
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </form>
+
+  <div class="resend">Didn't get a code? <a href="{% url 'login' %}">Resend</a></div>
 </div>
 {% endblock %}

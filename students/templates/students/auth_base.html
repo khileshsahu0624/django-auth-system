@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Introduction — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F8FC;
+    --surface:#FFFFFF;
+    --primary:#1E40AF;
+    --primary-dark:#152F86;
+    --accent:#93C5FD;
+    --accent-soft:#EAF2FE;
+    --ink:#131F3D;
+    --sub:#6B7690;
+    --line:#E4E8F2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ===================== LEFT PANEL ===================== */
+  .left{
+    flex:1.05;
+    background:linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color:#fff;
+    padding:56px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+    overflow:hidden;
+  }
+  .left::before{
+    content:"";
+    position:absolute;
+    width:520px;height:520px;
+    border-radius:50%;
+    background:rgba(255,255,255,.05);
+    top:-180px;right:-160px;
+  }
+  .left::after{
+    content:"";
+    position:absolute;
+    width:360px;height:360px;
+    border-radius:50%;
+    background:rgba(147,197,253,.14);
+    bottom:-140px;left:-100px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:relative;
+    z-index:1;
+  }
+  .brand-mark{
+    width:38px;height:38px;border-radius:9px;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.22);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Sora',sans-serif;font-weight:700;font-size:15px;
+  }
+  .brand-name{font-family:'Sora',sans-serif;font-weight:700;font-size:15.5px;letter-spacing:.01em;}
+
+  .left-copy{position:relative;z-index:1;max-width:440px;}
+  .left-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--accent);
+    letter-spacing:.05em;
+    margin-bottom:18px;
+  }
+  .left-copy h1{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:38px;
+    line-height:1.16;
+    letter-spacing:-0.015em;
+    margin-bottom:18px;
+  }
+  .left-copy p{
+    font-size:15px;
+    line-height:1.65;
+    color:rgba(255,255,255,.78);
+    max-width:400px;
+  }
+
+  /* ecosystem chip row */
+  .flow{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:30px;
+    position:relative;
+    z-index:1;
+  }
+  .flow span{
+    font-size:12px;
+    font-weight:500;
+    padding:7px 13px;
+    border-radius:20px;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.16);
+    color:#fff;
+  }
+  .flow span.hi{background:var(--accent);color:var(--primary-dark);font-weight:700;border-color:var(--accent);}
+
+  .left-foot{
+    position:relative;z-index:1;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:12.5px;
+    color:rgba(255,255,255,.55);
+  }
+  .left-foot .stats{display:flex;gap:26px;}
+  .left-foot .stats b{
+    display:block;
+    font-family:'Sora',sans-serif;
+    font-size:17px;
+    color:#fff;
+    font-weight:700;
+  }
+
+  /* ===================== RIGHT PANEL ===================== */
+  .right{
+    flex:1;
+    background:var(--bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+  }
+  .form-wrap{
+    width:100%;
+    max-width:380px;
+  }
+  .form-top{margin-bottom:30px;}
+  .step-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--primary);
+    background:var(--accent-soft);
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:5px;
+    margin-bottom:16px;
+  }
+  .form-top h2{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:26px;
+    letter-spacing:-0.01em;
+    margin-bottom:8px;
+  }
+  .form-top p{font-size:13.5px;color:var(--sub);line-height:1.55;}
+  .form-top p b{color:var(--ink);font-weight:600;}
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    margin-bottom:7px;
+    color:var(--ink);
+  }
+  .input-shell{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--surface);
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    padding:12px 14px;
+    transition:border-color .15s;
+  }
+  .input-shell.focused{border-color:var(--primary);box-shadow:0 0 0 3px var(--accent-soft);}
+  .input-shell svg{flex-shrink:0;color:var(--sub);}
+  .input-shell input{
+    border:none;outline:none;
+    flex:1;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    background:transparent;
+  }
+  .input-shell input::placeholder{color:#A6ADC0;}
+  .toggle-eye{cursor:pointer;color:var(--sub);}
+
+  .row-between{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:-6px 0 22px;
+  }
+  .remember{
+    display:flex;align-items:center;gap:7px;
+    font-size:12.5px;color:var(--sub);
+  }
+  .remember input{accent-color:var(--primary);width:14px;height:14px;}
+  .forgot{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--primary);
+  }
+
+  .btn-primary{
+    width:100%;
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    padding:13.5px;
+    border-radius:9px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:background .15s;
+  }
+  .btn-primary:hover{background:var(--primary-dark);}
+
+  .divider{
+    display:flex;align-items:center;gap:12px;
+    margin:22px 0;
+    color:var(--sub);
+    font-size:12px;
+  }
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  .switch-link{
+    text-align:center;
+    font-size:13px;
+    color:var(--sub);
+    margin-top:22px;
+  }
+  .switch-link a{color:var(--primary);font-weight:600;}
+
+  /* OTP step */
+  .otp-row{display:flex;gap:10px;margin-bottom:22px;}
+  .otp-box{
+    width:100%;
+    aspect-ratio:1;
+    background:var(--surface);
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    color:var(--ink);
+  }
+  .otp-box.filled{border-color:var(--primary);background:var(--accent-soft);}
+  .otp-box.active{border-color:var(--primary);box-shadow:0 0 0 3px var(--accent-soft);}
+  .resend{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--sub);
+    margin-top:18px;
+  }
+  .resend a{color:var(--primary);font-weight:600;}
+
+  .back-link{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12.5px;font-weight:600;color:var(--sub);
+    margin-bottom:20px;cursor:pointer;
+    text-decoration: none;
+  }
+
+  .alert {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      font-size: 13.5px;
+  }
+  .alert-error {
+      background-color: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #F87171;
+  }
+  .alert-success {
+      background-color: #DCFCE7;
+      color: #166534;
+      border: 1px solid #4ADE80;
+  }
+
+  @media (max-width:860px){
+    .screen{flex-direction:column;}
+    .left{padding:36px;}
+    .left-copy h1{font-size:28px;}
+    .left-foot{display:none;}
+    .right{padding:32px 24px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="screen">
+  <!-- ================= LEFT ================= -->
+  <div class="left">
+    <div class="brand">
+      <div class="brand-mark">BI</div>
+      <div class="brand-name">Business Introduction</div>
+    </div>
+
+    <div class="left-copy">
+      <div class="left-eyebrow">ECOSYSTEM CONSOLE</div>
+      <h1>Learn, get placed, and stay ahead — all in one console.</h1>
+      <p>Sign in to your dashboard for training, mock interviews, and placement tracking — built for students, trainers, colleges and hiring partners.</p>
+
+      <div class="flow">
+        <span class="hi">Learn</span>
+        <span>Practice</span>
+        <span>Assess</span>
+        <span>Interview</span>
+        <span>Get Hired</span>
+        <span>Upskill</span>
+      </div>
+    </div>
+
+    <div class="left-foot">
+      <div class="stats">
+        <div><b>12,480</b>Active learners</div>
+        <div><b>184</b>Corporate partners</div>
+        <div><b>76.4%</b>Placement rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= RIGHT ================= -->
+  <div class="right">
+    <div class="form-wrap">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block auth_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const eyeIcons = document.querySelectorAll('.toggle-eye');
+    eyeIcons.forEach(icon => {
+      const input = icon.previousElementSibling;
+      if (input && input.tagName === 'INPUT') {
+        icon.addEventListener('mouseenter', () => input.type = 'text');
+        icon.addEventListener('mouseleave', () => input.type = 'password');
+      }
+    });
+  });
+</script>
+</body>
+</html>

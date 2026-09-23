@@ -1,0 +1,51 @@
+{% extends 'students/base.html' %}
+
+{% block title %}{% if object %}Edit Role{% else %}Add Role{% endif %}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="h4 mb-1">{% if object %}Edit Role{% else %}Create Role{% endif %}</h2>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm p-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">Role Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-4">
+                    <label for="{{ form.permissions.id_for_label }}" class="form-label fw-semibold">Permissions</label>
+                    {{ form.permissions }}
+                    <div class="form-text small">Hold down "Control", or "Command" on a Mac, to select more than one.</div>
+                    {% if form.permissions.errors %}<div class="text-danger small mt-1">{{ form.permissions.errors }}</div>{% endif %}
+                </div>
+                
+                <div class="d-flex gap-2 pt-2 border-top mt-4 pt-3">
+                    <button type="submit" class="btn btn-primary px-4">Save Role</button>
+                    <a href="{% url 'role_list' %}" class="btn btn-light border px-4">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
+        el.classList.add('form-control');
+    });
+    document.querySelectorAll('select[multiple]').forEach(el => {
+        el.style.height = '150px';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'students/auth_base.html' %}
+
+{% block auth_content %}
+<div id="step1">
+  <div class="form-top">
+    <h2>Create an account</h2>
+    <p>Sign up to join the Student System.</p>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label>First Name <span style="color: red;">*</span></label>
+      <div class="input-shell focused">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <input type="text" name="first_name" placeholder="John" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Last Name</label>
+      <div class="input-shell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <input type="text" name="last_name" placeholder="Doe">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Mobile Number <span style="color: red;">*</span></label>
+      <div class="input-shell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        <input type="text" name="mobile_number" placeholder="1234567890" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Email address <span style="color: red;">*</span></label>
+      <div class="input-shell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="m2 6 10 7 10-7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        <input type="email" name="email" placeholder="you@company.com" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Username <span style="color: red;">*</span></label>
+      <div class="input-shell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <input type="text" name="username" placeholder="Choose a username" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Password <span style="color: red;">*</span></label>
+      <div class="input-shell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <input type="password" name="password" placeholder="Enter your password" required>
+        <svg class="toggle-eye" style="cursor: pointer;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Confirm Password <span style="color: red;">*</span></label>
+      <div class="input-shell">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <input type="password" name="confirm_password" placeholder="Confirm your password" required>
+        <svg class="toggle-eye" style="cursor: pointer;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary" style="margin-top: 20px;">
+      Sign up
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </form>
+
+  <div class="switch-link">Already have an account? <a href="{% url 'login' %}">Sign in</a></div>
+</div>
+{% endblock %}

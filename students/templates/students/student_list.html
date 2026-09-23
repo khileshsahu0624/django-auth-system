@@ -1,46 +1,1349 @@
 {% extends 'students/base.html' %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Student List</h2>
-    {% if request.user.role == 'SUPER_ADMIN' or request.user.role == 'ADMIN' %}
-    <a href="{% url 'student_create' %}" class="btn btn-success">+ Add Student</a>
-    {% endif %}
-</div>
+{% block title %}Super Admin · Dashboard{% endblock %}
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Course</th>
-            {% if request.user.role == 'SUPER_ADMIN' or request.user.role == 'ADMIN' %}
-            <th>Actions</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ student.name }}</td>
-            <td>{{ student.email }}</td>
-            <td>{{ student.phone }}</td>
-            <td>{{ student.course }}</td>
-            {% if request.user.role == 'SUPER_ADMIN' or request.user.role == 'ADMIN' %}
-            <td>
-                <a href="{% url 'student_update' student.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-            {% endif %}
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6" class="text-center">No students found</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% block content %}
+<!-- ==================== SUPER ADMIN DASHBOARD ==================== -->
+          {% if request.user.is_superuser or request.user.role.name == 'Super Admin' %}
+
+            <div class="page-head">
+              <div>
+                <h1>Super Admin Dashboard</h1>
+                <p>
+                  Monitor today's training operations, classes, attendance and
+                  overall LMS activity.
+                </p>
+              </div>
+              <button class="filter-btn">
+                Today
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend up">+24</span>
+                </div>
+                <div class="kpi-label">Total Students</div>
+                <div class="kpi-number">1,248</div>
+                <div class="kpi-sub">+24 this month</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z" />
+                      <path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend neutral">34 active</span>
+                </div>
+                <div class="kpi-label">Active Teachers</div>
+                <div class="kpi-number">36</div>
+                <div class="kpi-sub">34 active</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path
+                        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend neutral">10 active</span>
+                </div>
+                <div class="kpi-label">Active Courses</div>
+                <div class="kpi-number">12</div>
+                <div class="kpi-sub">10 active</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="m12 2 9 5-9 5-9-5 9-5Z" />
+                      <path d="m3 12 9 5 9-5" />
+                      <path d="m3 17 9 5 9-5" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend neutral">Running</span>
+                </div>
+                <div class="kpi-label">Active Batches</div>
+                <div class="kpi-number">28</div>
+                <div class="kpi-sub">Currently running</div>
+              </div>
+            </div>
+
+            <section class="block grid-2">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>Today's Classes</h2>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="responsive-table">
+                    <thead>
+                      <tr>
+                        <th>Time</th>
+                        <th>Course / Batch</th>
+                        <th>Topic</th>
+                        <th>Teacher</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-label="Time" class="cell-time">07:00 PM</td>
+                        <td data-label="Batch" class="cell-strong">
+                          Cyber Security Batch 01
+                        </td>
+                        <td data-label="Topic">Networking Fundamentals</td>
+                        <td data-label="Teacher">Amit Sir</td>
+                        <td data-label="Status">
+                          <span class="status-badge status-upcoming">
+                            <span class="s-dot"></span>
+                            Upcoming
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Time" class="cell-time">04:00 PM</td>
+                        <td data-label="Batch" class="cell-strong">
+                          Cyber Security Batch 01
+                        </td>
+                        <td data-label="Topic">Firewall Basics</td>
+                        <td data-label="Teacher">Amit Sir</td>
+                        <td data-label="Status">
+                          <span class="status-badge status-live">
+                            <span class="s-dot"></span>
+                            Live
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="live-card">
+                <span class="live-tag">
+                  <span class="ping"></span>
+                  LIVE NOW
+                </span>
+                <div class="live-batch">Cyber Security Batch 01</div>
+                <div class="live-topic">Networking Fundamentals</div>
+                <div class="live-meta">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z" />
+                    <path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5" />
+                  </svg>
+                  Amit Sir · 07:00 PM – 08:30 PM
+                </div>
+                <div class="live-stats">
+                  <div>
+                    <div class="live-stat-num">42</div>
+                    <div class="live-stat-label">Students</div>
+                  </div>
+                  <div>
+                    <div class="live-stat-num">38</div>
+                    <div class="live-stat-label">Joined</div>
+                  </div>
+                </div>
+                <div class="live-join-bar">
+                  <div class="live-join-fill"></div>
+                </div>
+                <button class="live-btn">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                  </svg>
+                  Monitor Class
+                </button>
+              </div>
+            </section>
+
+            <!-- ATTENTION REQUIRED -->
+            <section class="block">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>Attention Required</h2>
+                    <a class="view-all" href="#">
+                      View All
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+                <div class="attn-list">
+                  <a class="attn-row" href="#">
+                    <div class="attn-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                        />
+                        <path d="M12 9v4M12 17h.01" />
+                      </svg>
+                    </div>
+                    <div class="attn-text">Classes have missing attendance</div>
+                    <div class="attn-count">3</div>
+                    <div class="attn-arrow">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </div>
+                  </a>
+                  <a class="attn-row" href="#">
+                    <div class="attn-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                        />
+                        <path d="M12 9v4M12 17h.01" />
+                      </svg>
+                    </div>
+                    <div class="attn-text">
+                      Completed classes have no recording
+                    </div>
+                    <div class="attn-count">5</div>
+                    <div class="attn-arrow">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </div>
+                  </a>
+                  <a class="attn-row" href="#">
+                    <div class="attn-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                        />
+                        <path d="M12 9v4M12 17h.01" />
+                      </svg>
+                    </div>
+                    <div class="attn-text">Classes have no notes uploaded</div>
+                    <div class="attn-count">4</div>
+                    <div class="attn-arrow">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </div>
+                  </a>
+                  <a class="attn-row" href="#">
+                    <div class="attn-icon err">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                        />
+                        <path d="M12 9v4M12 17h.01" />
+                      </svg>
+                    </div>
+                    <div class="attn-text">
+                      Students with attendance below 75%
+                    </div>
+                    <div class="attn-count">12</div>
+                    <div class="attn-arrow">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </div>
+                  </a>
+                  <a class="attn-row" href="#">
+                    <div class="attn-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                        />
+                        <path d="M12 9v4M12 17h.01" />
+                      </svg>
+                    </div>
+                    <div class="attn-text">Assignments pending review</div>
+                    <div class="attn-count">18</div>
+                    <div class="attn-arrow">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- ATTENDANCE OVERVIEW + BATCH PERFORMANCE -->
+            <section class="block grid-2">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head"><h2>Attendance Overview</h2></div>
+                </div>
+                <div class="attendance-stats">
+                  <div>
+                    <div class="att-stat-num">84.6%</div>
+                    <div class="att-stat-label">Average Attendance</div>
+                  </div>
+                  <div>
+                    <div class="att-stat-num warn">12</div>
+                    <div class="att-stat-label">Students Below Threshold</div>
+                  </div>
+                </div>
+                <div class="bar-chart">
+                  <div class="bar-col">
+                    <div class="bar-val">82%</div>
+                    <div class="bar-fill" style="height: 82%"></div>
+                    <div class="bar-day">Mon</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-val">85%</div>
+                    <div class="bar-fill" style="height: 85%"></div>
+                    <div class="bar-day">Tue</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-val">88%</div>
+                    <div class="bar-fill" style="height: 88%"></div>
+                    <div class="bar-day">Wed</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-val">84%</div>
+                    <div class="bar-fill" style="height: 84%"></div>
+                    <div class="bar-day">Thu</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-val">86%</div>
+                    <div class="bar-fill" style="height: 86%"></div>
+                    <div class="bar-day">Fri</div>
+                  </div>
+                  <div class="bar-col">
+                    <div class="bar-val">83%</div>
+                    <div class="bar-fill" style="height: 83%"></div>
+                    <div class="bar-day">Sat</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>Batch Performance</h2>
+                    <a class="view-all" href="#">
+                      View All
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="responsive-table">
+                    <thead>
+                      <tr>
+                        <th>Batch</th>
+                        <th>Attendance</th>
+                        <th>Progress</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-label="Batch" class="cell-strong">
+                          Cyber Security Batch 01
+                        </td>
+                        <td data-label="Attendance">
+                          <span class="pct-text">91%</span>
+                        </td>
+                        <td data-label="Progress">
+                          <span class="progress-track">
+                            <span class="progress-fill" style="width: 82%"></span>
+                          </span>
+                          <span class="pct-text">82%</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Batch" class="cell-strong">
+                          Full Stack Batch 03
+                        </td>
+                        <td data-label="Attendance">
+                          <span class="pct-text">87%</span>
+                        </td>
+                        <td data-label="Progress">
+                          <span class="progress-track">
+                            <span class="progress-fill" style="width: 78%"></span>
+                          </span>
+                          <span class="pct-text">78%</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Batch" class="cell-strong">
+                          Data Analytics Batch 02
+                        </td>
+                        <td data-label="Attendance">
+                          <span class="pct-text">83%</span>
+                        </td>
+                        <td data-label="Progress">
+                          <span class="progress-track">
+                            <span class="progress-fill" style="width: 75%"></span>
+                          </span>
+                          <span class="pct-text">75%</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Batch" class="cell-strong">
+                          Cloud Batch 01
+                        </td>
+                        <td data-label="Attendance">
+                          <span class="pct-text" style="color: var(--warning)">
+                            69%
+                          </span>
+                        </td>
+                        <td data-label="Progress">
+                          <span class="progress-track">
+                            <span
+                              class="progress-fill warn"
+                              style="width: 61%"
+                            ></span>
+                          </span>
+                          <span class="pct-text" style="color: var(--warning)">
+                            61%
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <!-- STUDENTS REQUIRING ATTENTION + TEACHER ACTIVITY -->
+            <section class="block grid-2">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>Students Requiring Attention</h2>
+                  </div>
+                </div>
+                <div class="student-list">
+                  <div class="student-row">
+                    <div class="s-avatar">RS</div>
+                    <div class="s-info">
+                      <div class="s-name">Rahul Sharma</div>
+                      <div class="s-batch">Cyber Security Batch 01</div>
+                    </div>
+                    <div class="s-metrics">
+                      <div class="s-metric">
+                        <div class="s-metric-val err">62%</div>
+                        <div class="s-metric-label">Attendance</div>
+                      </div>
+                      <div class="s-metric">
+                        <div class="s-metric-val">48%</div>
+                        <div class="s-metric-label">Progress</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="student-row">
+                    <div class="s-avatar">AK</div>
+                    <div class="s-info">
+                      <div class="s-name">Amit Kumar</div>
+                      <div class="s-batch">Full Stack Batch 02</div>
+                    </div>
+                    <div class="s-metrics">
+                      <div class="s-metric">
+                        <div class="s-metric-val warn">68%</div>
+                        <div class="s-metric-label">Attendance</div>
+                      </div>
+                      <div class="s-metric">
+                        <div class="s-metric-val">51%</div>
+                        <div class="s-metric-label">Progress</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="student-row">
+                    <div class="s-avatar">NP</div>
+                    <div class="s-info">
+                      <div class="s-name">Neha Patil</div>
+                      <div class="s-batch">Cloud Batch 01</div>
+                    </div>
+                    <div class="s-metrics">
+                      <div class="s-metric">
+                        <div class="s-metric-val warn">71%</div>
+                        <div class="s-metric-label">Attendance</div>
+                      </div>
+                      <div class="s-metric">
+                        <div class="s-metric-val">55%</div>
+                        <div class="s-metric-label">Progress</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="student-row">
+                    <div class="s-avatar">VS</div>
+                    <div class="s-info">
+                      <div class="s-name">Vikram Singh</div>
+                      <div class="s-batch">Data Analytics Batch 02</div>
+                    </div>
+                    <div class="s-metrics">
+                      <div class="s-metric">
+                        <div class="s-metric-val err">58%</div>
+                        <div class="s-metric-label">Attendance</div>
+                      </div>
+                      <div class="s-metric">
+                        <div class="s-metric-val">44%</div>
+                        <div class="s-metric-label">Progress</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <a class="view-all-foot" href="#">View All Students</a>
+              </div>
+
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head"><h2>Teacher Activity</h2></div>
+                </div>
+                <div class="table-wrap">
+                  <table class="responsive-table">
+                    <thead>
+                      <tr>
+                        <th>Teacher</th>
+                        <th>Classes</th>
+                        <th>Attendance</th>
+                        <th>Recording</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-label="Teacher" class="cell-strong">Amit Sir</td>
+                        <td data-label="Classes">12</td>
+                        <td data-label="Attendance">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                        <td data-label="Recording">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                        <td data-label="Notes">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Teacher" class="cell-strong">
+                          Rahul Sir
+                        </td>
+                        <td data-label="Classes">10</td>
+                        <td data-label="Attendance">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                        <td data-label="Recording">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                        <td data-label="Notes">
+                          <svg
+                            class="check-icon warn"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                            />
+                            <path d="M12 9v4M12 17h.01" />
+                          </svg>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Teacher" class="cell-strong">
+                          Priya Ma'am
+                        </td>
+                        <td data-label="Classes">8</td>
+                        <td data-label="Attendance">
+                          <svg
+                            class="check-icon warn"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                            />
+                            <path d="M12 9v4M12 17h.01" />
+                          </svg>
+                        </td>
+                        <td data-label="Recording">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                        <td data-label="Notes">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Teacher" class="cell-strong">
+                          Divya Ma'am
+                        </td>
+                        <td data-label="Classes">9</td>
+                        <td data-label="Attendance">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                        <td data-label="Recording">
+                          <svg
+                            class="check-icon warn"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                            />
+                            <path d="M12 9v4M12 17h.01" />
+                          </svg>
+                        </td>
+                        <td data-label="Notes">
+                          <svg
+                            class="check-icon ok"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <!-- UPCOMING CLASSES + RECENT ACTIVITY -->
+            <section class="block grid-2">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head"><h2>Upcoming Classes</h2></div>
+                </div>
+                <div class="upcoming-daylabel">Tomorrow</div>
+                <div class="upcoming-row">
+                  <div class="up-time">09:00 AM</div>
+                  <div class="up-info">
+                    <div class="up-topic">Linux Fundamentals</div>
+                    <div class="up-batch">Cyber Security Batch 01</div>
+                  </div>
+                  <div class="up-teacher">Amit Sir</div>
+                </div>
+                <div class="upcoming-row">
+                  <div class="up-time">07:00 PM</div>
+                  <div class="up-info">
+                    <div class="up-topic">React Hooks</div>
+                    <div class="up-batch">Full Stack Batch 03</div>
+                  </div>
+                  <div class="up-teacher">Rahul Sir</div>
+                </div>
+                <div class="upcoming-row">
+                  <div class="up-time">08:30 PM</div>
+                  <div class="up-info">
+                    <div class="up-topic">SQL Basics</div>
+                    <div class="up-batch">Data Analytics Batch 02</div>
+                  </div>
+                  <div class="up-teacher">Priya Ma'am</div>
+                </div>
+                <a class="view-all-foot" href="#">View Schedule</a>
+              </div>
+
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>Recent Activity</h2>
+                  </div>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                      <div class="activity-text">
+                        <b>Amit Sir</b>
+                        uploaded recording
+                      </div>
+                      <div class="activity-sub">Cyber Security Batch 01</div>
+                      <div class="activity-time">10 minutes ago</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                      <div class="activity-text">
+                        <b>Rahul Sharma</b>
+                        was added to Batch 03
+                      </div>
+                      <div class="activity-time">25 minutes ago</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                      <div class="activity-text">
+                        <b>Admin</b>
+                        rescheduled React class
+                      </div>
+                      <div class="activity-time">1 hour ago</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                      <div class="activity-text">
+                        <b>Priya Ma'am</b>
+                        submitted attendance
+                      </div>
+                      <div class="activity-time">2 hours ago</div>
+                    </div>
+                  </div>
+                </div>
+                <a class="view-all-foot" href="#">View Activity Logs</a>
+              </div>
+            </section>
+
+            <!-- QUICK ACTIONS -->
+            <section class="block">
+              <div class="card">
+                <div class="card-pad" style="padding-bottom: 0">
+                  <div class="section-head"><h2>Quick Actions</h2></div>
+                </div>
+                <div class="quick-actions">
+                  <button class="qa-btn primary">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Create Student
+                  </button>
+                  <button class="qa-btn">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Create Teacher
+                  </button>
+                  <button class="qa-btn">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Create Batch
+                  </button>
+                  <button class="qa-btn">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Schedule Class
+                  </button>
+                  <button class="qa-btn">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Create Assignment
+                  </button>
+                  <button class="qa-btn">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    Send Notification
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- ==================== ADMIN DASHBOARD ==================== -->
+          {% elif request.user.role.name == 'Admin' %}
+
+            <div class="page-head">
+              <div>
+                <h1>Admin Dashboard</h1>
+                <p>
+                  Welcome back! Here's an overview of your classes, students, and
+                  grading tasks.
+                </p>
+              </div>
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend up">+3</span>
+                </div>
+                <div class="kpi-label">My Students</div>
+                <div class="kpi-number">142</div>
+                <div class="kpi-sub">Across 3 batches</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2.5" />
+                      <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend neutral">Today</span>
+                </div>
+                <div class="kpi-label">Classes Today</div>
+                <div class="kpi-number">3</div>
+                <div class="kpi-sub">1 completed, 2 upcoming</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="8" y="2" width="8" height="4" rx="1.2" />
+                      <path
+                        d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v15A1.5 1.5 0 0 0 5.5 22h13a1.5 1.5 0 0 0 1.5-1.5v-15A1.5 1.5 0 0 0 18.5 4H15"
+                      />
+                      <path d="M9 12h6M9 16h6" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend warn">To Grade</span>
+                </div>
+                <div class="kpi-label">Pending Assignments</div>
+                <div class="kpi-number">28</div>
+                <div class="kpi-sub">Need review</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend neutral">Average</span>
+                </div>
+                <div class="kpi-label">Class Attendance</div>
+                <div class="kpi-number">88.5%</div>
+                <div class="kpi-sub">Across all batches</div>
+              </div>
+            </div>
+
+            <section class="block grid-2">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>My Schedule Today</h2>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="responsive-table">
+                    <thead>
+                      <tr>
+                        <th>Time</th>
+                        <th>Batch</th>
+                        <th>Topic</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-label="Time" class="cell-time">10:00 AM</td>
+                        <td data-label="Batch" class="cell-strong">
+                          Full Stack Batch 03
+                        </td>
+                        <td data-label="Topic">React Hooks</td>
+                        <td data-label="Status">
+                          <span class="status-badge status-completed">
+                            <span class="s-dot"></span>
+                            Completed
+                          </span>
+                        </td>
+                        <td data-label="Action" class="cell-actions">
+                          <button class="row-btn">View Notes</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Time" class="cell-time">02:00 PM</td>
+                        <td data-label="Batch" class="cell-strong">
+                          Full Stack Batch 03
+                        </td>
+                        <td data-label="Topic">Redux State</td>
+                        <td data-label="Status">
+                          <span class="status-badge status-live">
+                            <span class="s-dot"></span>
+                            Live
+                          </span>
+                        </td>
+                        <td data-label="Action" class="cell-actions">
+                          <button class="row-btn primary">Join Class</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head"><h2>Attention Required</h2></div>
+                </div>
+                <div class="attn-list">
+                  <div class="attn-row">
+                    <div class="attn-text">Grade "React Basics" Assignment</div>
+                    <div class="attn-count">12 pending</div>
+                  </div>
+                  <div class="attn-row">
+                    <div class="attn-text">Mark Attendance for morning class</div>
+                    <div class="attn-count">1 pending</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ==================== USER (STUDENT) DASHBOARD ==================== -->
+          {% else %}
+
+            <div class="page-head">
+              <div>
+                <h1>Student Dashboard</h1>
+                <p>
+                  Welcome to your learning dashboard. Keep track of your upcoming
+                  classes, assignments, and progress.
+                </p>
+              </div>
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path
+                        d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend up">Active</span>
+                </div>
+                <div class="kpi-label">Enrolled Courses</div>
+                <div class="kpi-number">2</div>
+                <div class="kpi-sub">Full Stack Web Dev, UI/UX</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend up">Good</span>
+                </div>
+                <div class="kpi-label">My Attendance</div>
+                <div class="kpi-number">92%</div>
+                <div class="kpi-sub">Above 75% required</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="8" y="2" width="8" height="4" rx="1.2" />
+                      <path
+                        d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v15A1.5 1.5 0 0 0 5.5 22h13a1.5 1.5 0 0 0 1.5-1.5v-15A1.5 1.5 0 0 0 18.5 4H15"
+                      />
+                      <path d="M9 12h6M9 16h6" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend warn">Due Soon</span>
+                </div>
+                <div class="kpi-label">Pending Assignments</div>
+                <div class="kpi-number">1</div>
+                <div class="kpi-sub">Due in 2 days</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-top">
+                  <div class="kpi-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 3v18h18" />
+                      <rect x="7" y="12" width="3" height="6" />
+                      <rect x="12.5" y="8" width="3" height="10" />
+                      <rect x="18" y="5" width="3" height="13" />
+                    </svg>
+                  </div>
+                  <span class="kpi-trend neutral">Avg.</span>
+                </div>
+                <div class="kpi-label">Average Score</div>
+                <div class="kpi-number">84/100</div>
+                <div class="kpi-sub">Across 5 assessments</div>
+              </div>
+            </div>
+
+            <section class="block grid-2">
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head">
+                    <h2>My Upcoming Classes</h2>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="responsive-table">
+                    <thead>
+                      <tr>
+                        <th>Time</th>
+                        <th>Course</th>
+                        <th>Topic</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-label="Time" class="cell-time">10:00 AM</td>
+                        <td data-label="Course" class="cell-strong">
+                          Full Stack Web Dev
+                        </td>
+                        <td data-label="Topic">React Hooks</td>
+                        <td data-label="Status">
+                          <span class="status-badge status-upcoming">
+                            <span class="s-dot"></span>
+                            Upcoming
+                          </span>
+                        </td>
+                        <td data-label="Action" class="cell-actions">
+                          <button class="row-btn">View Notes</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td data-label="Time" class="cell-time">02:00 PM</td>
+                        <td data-label="Course" class="cell-strong">
+                          UI/UX Design
+                        </td>
+                        <td data-label="Topic">Wireframing basics</td>
+                        <td data-label="Status">
+                          <span class="status-badge status-live">
+                            <span class="s-dot"></span>
+                            Live
+                          </span>
+                        </td>
+                        <td data-label="Action" class="cell-actions">
+                          <button class="row-btn primary">Join Class</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-pad">
+                  <div class="section-head"><h2>My Action Items</h2></div>
+                </div>
+                <div class="attn-list">
+                  <div class="attn-row">
+                    <div class="attn-text">Submit "React Basics" Assignment</div>
+                    <div class="attn-count warn">Due Tomorrow</div>
+                  </div>
+                  <div class="attn-row">
+                    <div class="attn-text">Complete HTML/CSS Quiz</div>
+                    <div class="attn-count">Due in 3 days</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          {% endif %}
 {% endblock %}

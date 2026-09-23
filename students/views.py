@@ -11,6 +11,43 @@ from .forms import StudentForm
 
 User = get_user_model()
 
+# ========== REGISTER ==========
+def user_register(request):
+    if request.user.is_authenticated:
+        return redirect('student_list')
+        
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        mobile_number = request.POST.get('mobile_number')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name', '')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists. Please choose a different one.')
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already registered.')
+        else:
+            user = User(
+                username=username,
+                email=email,
+                mobile_number=mobile_number,
+                first_name=first_name,
+                last_name=last_name,
+                role=User.Role.STUDENT,
+                is_active=True
+            )
+            user.set_password(password)
+            user.save()
+            messages.success(request, 'Registration successful! You can now login.')
+            return redirect('login')
+            
+    return render(request, 'students/register.html')
+
 # ========== LOGIN (OTP Generation) ==========
 def user_login(request):
     if request.user.is_authenticated:
@@ -134,3 +171,9 @@ def student_delete(request, pk):
         messages.success(request, 'Student deleted successfully!')
         return redirect('student_list')
     return render(request, 'students/student_confirm_delete.html', {'student': student})
+
+# ========== PUBLIC LANDING PAGE ==========
+def landing_page(request):
+    if request.user.is_authenticated:
+        return redirect('student_list')
+    return render(request, 'students/landing.html')

@@ -1,37 +1,908 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}LMS Dashboard{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F8FC;
+    --surface:#FFFFFF;
+    --primary:#1E40AF;
+    --primary-dark:#152C80;
+    --accent:#93C5FD;
+    --text:#131F3D;
+    --text-secondary:#5B6580;
+    --text-muted:#8992AC;
+    --border:#E6E8F2;
+    --border-soft:#EEF0F8;
+    --table-head:#F3F4FA;
+    --hover:#F1F4FE;
+    --active-bg:#E8EFFE;
+    --success:#12805C;
+    --success-bg:#E6F5EF;
+    --warning:#B26A00;
+    --warning-bg:#FFF3E0;
+    --error:#C0293C;
+    --error-bg:#FDEAED;
+    --live:#D5273B;
+    --live-bg:#FDEDEF;
+    --radius-sm:8px;
+    --radius-md:10px;
+    --radius-lg:12px;
+    --shadow-card:0 1px 2px rgba(19,31,61,0.04), 0 1px 8px rgba(19,31,61,0.03);
+    --shadow-pop:0 8px 24px rgba(19,31,61,0.12);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    line-height:1.5;
+  }
+  h1,h2,h3,.font-display{ font-family:'Sora',sans-serif; }
+  button{font-family:inherit; cursor:pointer;}
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  input{font-family:inherit;}
+
+  /* ===== Scrollbar (subtle) ===== */
+  ::-webkit-scrollbar{width:8px; height:8px;}
+  ::-webkit-scrollbar-thumb{background:#D8DCEC; border-radius:8px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  :focus-visible{ outline:2px solid var(--primary); outline-offset:2px; border-radius:4px; }
+
+  /* ===================== APP SHELL ===================== */
+  .app{
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ===================== SIDEBAR ===================== */
+  .sidebar{
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    position:fixed;
+    top:0; left:0; bottom:0;
+    width:252px;
+    display:flex;
+    flex-direction:column;
+    z-index:60;
+    transition:transform .25s ease;
+  }
+  .sidebar-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:22px 22px 18px;
+  }
+  .brand-mark{
+    width:32px; height:32px;
+    border-radius:9px;
+    background:linear-gradient(155deg, var(--primary), #2E52D6);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Sora',sans-serif; font-weight:700; font-size:15px;
+    flex-shrink:0;
+  }
+  .brand-text{ font-family:'Sora',sans-serif; font-weight:700; font-size:16.5px; letter-spacing:-0.01em; color:var(--text);}
+  .brand-sub{ font-size:11px; color:var(--text-muted); margin-top:1px;}
+
+  .sidebar-scroll{
+    flex:1;
+    overflow-y:auto;
+    padding:6px 14px 14px;
+  }
+  .nav-group{ margin-top:18px; }
+  .nav-group:first-child{ margin-top:4px; }
+  .nav-group-label{
+    font-size:11px;
+    font-weight:600;
+    color:var(--text-muted);
+    letter-spacing:0.04em;
+    padding:0 10px 6px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:9px 10px;
+    border-radius:9px;
+    color:var(--text-secondary);
+    font-size:13.5px;
+    font-weight:500;
+    margin-bottom:2px;
+    transition:background .12s ease, color .12s ease;
+    position:relative;
+  }
+  .nav-item svg{ width:18px; height:18px; flex-shrink:0; stroke:currentColor; }
+  .nav-item:hover{ background:var(--hover); color:var(--text); text-decoration: none; }
+  .nav-item.active{
+    background:var(--active-bg);
+    color:var(--primary);
+    font-weight:600;
+  }
+  .nav-item .badge-dot{
+    margin-left:auto;
+    min-width:18px; height:18px; padding:0 5px;
+    border-radius:999px;
+    background:var(--live);
+    color:#fff;
+    font-size:10.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .sidebar-footer{
+    border-top:1px solid var(--border);
+    padding:12px 14px 16px;
+  }
+  .footer-item{
+    display:flex; align-items:center; gap:11px;
+    padding:9px 10px; border-radius:9px;
+    color:var(--text-secondary); font-size:13.5px; font-weight:500;
+  }
+  .footer-item:hover{ background:var(--hover); color:var(--text); text-decoration: none; }
+  .footer-item svg{ width:18px; height:18px; stroke:currentColor; }
+
+  .sidebar-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(19,31,61,0.4);
+    z-index:55;
+  }
+
+  /* ===================== MAIN COLUMN ===================== */
+  .main{
+    margin-left:252px;
+    min-width:0;
+  }
+
+  /* ===================== TOP HEADER ===================== */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background:rgba(248,248,252,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:16px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .topbar-left{ display:flex; align-items:center; gap:12px; }
+  .hamburger{
+    display:none;
+    width:36px; height:36px;
+    align-items:center; justify-content:center;
+    border-radius:9px; border:1px solid var(--border);
+    background:var(--surface);
+  }
+  .hamburger svg{ width:18px; height:18px; stroke:var(--text); }
+  .greeting{ font-family:'Sora',sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.01em; }
+  .greeting-date{ font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+
+  .topbar-right{ display:flex; align-items:center; gap:10px; }
+
+  .search-box{
+    display:flex; align-items:center; gap:8px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:9px 13px;
+    width:280px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .search-box:focus-within{ border-color:var(--primary); box-shadow:0 0 0 3px rgba(30,64,175,0.1); }
+  .search-box svg{ width:16px; height:16px; stroke:var(--text-muted); flex-shrink:0; }
+  .search-box input{ border:none; outline:none; background:transparent; font-size:13px; width:100%; color:var(--text); }
+  .search-box input::placeholder{ color:var(--text-muted); }
+
+  .icon-btn{
+    width:38px; height:38px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    transition:background .12s ease, border-color .12s ease;
+    flex-shrink:0;
+  }
+  .icon-btn:hover{ background:var(--hover); border-color:#D6DCF2; }
+  .icon-btn svg{ width:17px; height:17px; stroke:var(--text-secondary); }
+  .icon-btn .dot{
+    position:absolute; top:8px; right:9px;
+    width:7px; height:7px; border-radius:999px;
+    background:var(--live);
+    border:1.5px solid var(--surface);
+  }
+
+  .profile-btn{
+    display:flex; align-items:center; gap:9px;
+    padding:5px 10px 5px 5px;
+    border-radius:11px;
+    border:1px solid var(--border);
+    background:var(--surface);
+  }
+  .profile-btn:hover{ background:var(--hover); }
+  .avatar{
+    width:29px; height:29px; border-radius:8px;
+    background:linear-gradient(155deg, var(--primary), var(--accent));
+    color:#fff; font-family:'Sora',sans-serif; font-weight:700; font-size:12px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .profile-btn .p-name{ font-size:13px; font-weight:600; text-align: left;}
+  .profile-btn .p-role{ font-size:11px; color:var(--text-muted); text-align: left; }
+  .profile-btn svg{ width:14px; height:14px; stroke:var(--text-muted); }
+
+  .dropdown-wrap{ position:relative; }
+  .dropdown-panel{
+    position:absolute; top:calc(100% + 8px); right:0;
+    width:320px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow-pop);
+    z-index:50;
+    display:none;
+    overflow:hidden;
+  }
+  .dropdown-panel.open{ display:block; }
+  .dropdown-head{ padding:14px 16px; border-bottom:1px solid var(--border-soft); font-weight:600; font-size:13.5px; display:flex; justify-content:space-between; align-items:center;}
+  .dropdown-head span.count{ color:var(--text-muted); font-weight:500; font-size:12px;}
+  .notif-item{ padding:11px 16px; border-bottom:1px solid var(--border-soft); display:flex; gap:10px;}
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-item:hover{ background:var(--hover); }
+  .notif-dot{ width:7px; height:7px; border-radius:999px; background:var(--primary); margin-top:6px; flex-shrink:0;}
+  .notif-item.read .notif-dot{ background:var(--border); }
+  .notif-text{ font-size:12.5px; color:var(--text); }
+  .notif-time{ font-size:11px; color:var(--text-muted); margin-top:2px;}
+  .dropdown-foot{ padding:10px 16px; text-align:center; font-size:12.5px; font-weight:600; color:var(--primary); display:block; text-decoration:none; }
+  .dropdown-foot:hover{ background:var(--hover); text-decoration:none; }
+
+  .profile-menu{ padding:6px; width:200px; }
+  .profile-menu-item{ display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; font-size:13px; color:var(--text-secondary); font-weight:500; text-decoration:none;}
+  .profile-menu-item svg{ width:15px; height:15px; stroke:currentColor;}
+  .profile-menu-item:hover{ background:var(--hover); color:var(--text); text-decoration:none; }
+  .profile-menu-divider{ height:1px; background:var(--border-soft); margin:6px 4px; }
+
+  /* ===================== CONTENT ===================== */
+  .content{ padding:24px 28px 60px; max-width:1560px; }
+
+  .page-head{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap:16px; margin-bottom:22px; flex-wrap:wrap;
+  }
+  .page-head h1{ font-size:21px; font-weight:700; letter-spacing:-0.01em; }
+  .page-head p{ font-size:13px; color:var(--text-secondary); margin-top:4px; max-width:520px; }
+
+  .filter-btn{
+    display:flex; align-items:center; gap:7px;
+    background:var(--surface); border:1px solid var(--border);
+    padding:8px 13px; border-radius:9px; font-size:13px; font-weight:600;
+    color:var(--text);
+  }
+  .filter-btn svg{ width:14px; height:14px; stroke:var(--text-secondary); }
+  .filter-btn:hover{ border-color:#D6DCF2; background:var(--hover); }
+
+  /* ===================== SECTION HEADER ===================== */
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:13px;
+  }
+  .section-head h2{ font-size:15px; font-weight:700; letter-spacing:-0.005em; }
+  .section-head .view-all{ font-size:12.5px; font-weight:600; color:var(--primary); display:flex; align-items:center; gap:4px; text-decoration:none; }
+  .section-head .view-all:hover{ text-decoration:underline; }
+  .section-head .view-all svg{ width:13px; height:13px; stroke:currentColor; }
+
+  section.block{ margin-bottom:26px; }
+
+  /* ===================== KPI GRID ===================== */
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+    margin-bottom:26px;
+  }
+  .kpi-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:16px 17px;
+    box-shadow:var(--shadow-card);
+    transition:box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+  }
+  .kpi-card:hover{ box-shadow:0 4px 16px rgba(19,31,61,0.08); border-color:#DCE2F7; transform:translateY(-1px); }
+  .kpi-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .kpi-icon{
+    width:32px; height:32px; border-radius:9px;
+    background:var(--active-bg);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .kpi-icon svg{ width:16px; height:16px; stroke:var(--primary); }
+  .kpi-trend{ font-size:11px; font-weight:700; padding:2.5px 7px; border-radius:6px; }
+  .kpi-trend.up{ color:var(--success); background:var(--success-bg); }
+  .kpi-trend.warn{ color:var(--warning); background:var(--warning-bg); }
+  .kpi-trend.neutral{ color:var(--text-muted); background:var(--table-head); }
+  .kpi-label{ font-size:12.5px; color:var(--text-secondary); font-weight:500; }
+  .kpi-number{ font-family:'Sora',sans-serif; font-size:26px; font-weight:700; margin-top:3px; letter-spacing:-0.01em; }
+  .kpi-sub{ font-size:12px; color:var(--text-muted); margin-top:3px; }
+
+  /* ===================== GENERIC CARD ===================== */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card);
+  }
+  .card-pad{ padding:18px 18px 8px; }
+
+  .grid-2{ display:grid; grid-template-columns:1.62fr 1fr; gap:16px; align-items:start; }
+  .grid-2.reverse{ grid-template-columns:1fr 1.62fr; }
+
+  /* ===================== TABLE ===================== */
+  .table-wrap{ overflow-x:auto; }
+  table.responsive-table{ width:100%; border-collapse:collapse; margin-bottom:0; }
+  table.responsive-table thead th{
+    text-align:left;
+    font-size:11px;
+    font-weight:600;
+    color:var(--text-muted);
+    letter-spacing:0.03em;
+    padding:0 18px 10px;
+    white-space:nowrap;
+    border:none;
+  }
+  table.responsive-table tbody td{
+    padding:12px 18px;
+    font-size:13px;
+    border-top:1px solid var(--border-soft);
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  table.responsive-table tbody tr:hover td{ background:var(--hover); }
+  .cell-strong{ font-weight:600; color:var(--text); }
+  .cell-muted{ color:var(--text-muted); font-size:12.5px; }
+  .cell-time{ font-weight:700; font-family:'Sora',sans-serif; font-size:12.5px; color:var(--text); }
+
+  .status-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:11px; font-weight:700;
+    padding:4px 9px; border-radius:999px;
+    white-space:nowrap;
+  }
+  .status-badge .s-dot{ width:6px; height:6px; border-radius:999px; }
+  .status-upcoming{ background:var(--table-head); color:var(--text-secondary); }
+  .status-upcoming .s-dot{ background:var(--text-muted); }
+  .status-live{ background:var(--live-bg); color:var(--live); }
+  .status-live .s-dot{ background:var(--live); animation:pulse-dot 1.4s ease-in-out infinite; }
+  .status-completed{ background:var(--success-bg); color:var(--success); }
+  .status-completed .s-dot{ background:var(--success); }
+  .status-cancelled{ background:var(--error-bg); color:var(--error); }
+  .status-cancelled .s-dot{ background:var(--error); }
+  .status-rescheduled{ background:var(--warning-bg); color:var(--warning); }
+  .status-rescheduled .s-dot{ background:var(--warning); }
+
+  @keyframes pulse-dot{
+    0%,100%{ box-shadow:0 0 0 0 rgba(213,39,59,0.45); }
+    50%{ box-shadow:0 0 0 4px rgba(213,39,59,0); }
+  }
+
+  .row-btn{
+    font-size:12px; font-weight:600;
+    padding:6px 11px; border-radius:7px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text-secondary);
+    margin-right:6px;
+    display:inline-block;
+    text-decoration:none;
+  }
+  .row-btn:hover{ background:var(--hover); text-decoration:none; }
+  .row-btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  .row-btn.primary:hover{ background:var(--primary-dark); color:#fff; text-decoration:none; }
+
+  /* ===================== LIVE NOW CARD ===================== */
+  .live-card{
+    background:linear-gradient(165deg, #16266E 0%, var(--primary) 60%, #2450D8 100%);
+    border-radius:var(--radius-lg);
+    padding:19px 20px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 26px rgba(30,64,175,0.28);
+  }
+  .live-card::after{
+    content:"";
+    position:absolute; right:-40px; top:-40px;
+    width:160px; height:160px; border-radius:999px;
+    background:radial-gradient(circle, rgba(147,197,253,0.28), transparent 70%);
+  }
+  .live-tag{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,0.14);
+    border:1px solid rgba(255,255,255,0.22);
+    padding:4px 10px 4px 8px; border-radius:999px;
+    font-size:11px; font-weight:700; letter-spacing:0.03em;
+    margin-bottom:14px;
+  }
+  .live-tag .ping{ width:7px; height:7px; border-radius:999px; background:#FF6B7A; animation:pulse-dot 1.4s ease-in-out infinite; }
+  .live-batch{ font-family:'Sora',sans-serif; font-size:17px; font-weight:700; letter-spacing:-0.01em; position:relative; z-index:1; }
+  .live-topic{ font-size:13px; color:rgba(255,255,255,0.78); margin-top:3px; position:relative; z-index:1;}
+  .live-meta{ display:flex; align-items:center; gap:8px; margin-top:14px; font-size:12.5px; color:rgba(255,255,255,0.9); position:relative; z-index:1;}
+  .live-meta svg{ width:14px; height:14px; stroke:rgba(255,255,255,0.85); }
+  .live-stats{ display:flex; gap:20px; margin-top:16px; position:relative; z-index:1; }
+  .live-stat-num{ font-family:'Sora',sans-serif; font-size:19px; font-weight:700; }
+  .live-stat-label{ font-size:11px; color:rgba(255,255,255,0.7); margin-top:1px; }
+  .live-join-bar{ margin-top:14px; height:5px; border-radius:999px; background:rgba(255,255,255,0.18); overflow:hidden; position:relative; z-index:1;}
+  .live-join-fill{ height:100%; width:90%; background:#fff; border-radius:999px; }
+  .live-btn{
+    margin-top:16px; width:100%;
+    background:#fff; color:var(--primary);
+    border:none; padding:11px; border-radius:9px;
+    font-weight:700; font-size:13px;
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    position:relative; z-index:1;
+  }
+  .live-btn svg{ width:15px; height:15px; stroke:var(--primary); }
+  .live-btn:hover{ background:#EEF2FF; }
+
+  /* ===================== ATTENTION REQUIRED ===================== */
+  .attn-list{ display:flex; flex-direction:column; }
+  .attn-row{
+    display:flex; align-items:center; gap:13px;
+    padding:13px 18px;
+    border-top:1px solid var(--border-soft);
+    text-decoration:none;
+    color:inherit;
+  }
+  .attn-row:first-child{ border-top:none; }
+  .attn-row:hover{ background:var(--hover); text-decoration:none; color:inherit; }
+  .attn-icon{
+    width:34px; height:34px; border-radius:9px;
+    background:var(--warning-bg);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .attn-icon svg{ width:17px; height:17px; stroke:var(--warning); }
+  .attn-icon.err{ background:var(--error-bg); }
+  .attn-icon.err svg{ stroke:var(--error); }
+  .attn-text{ flex:1; font-size:13px; font-weight:500; }
+  .attn-count{
+    font-family:'Sora',sans-serif; font-weight:700; font-size:13px;
+    background:var(--table-head); color:var(--text);
+    padding:3px 9px; border-radius:7px;
+  }
+  .attn-count.warn{ color:var(--warning); }
+  .attn-arrow svg{ width:15px; height:15px; stroke:var(--text-muted); }
+
+  /* ===================== ATTENDANCE OVERVIEW ===================== */
+  .attendance-stats{ display:flex; gap:24px; padding:2px 18px 16px; }
+  .att-stat-num{ font-family:'Sora',sans-serif; font-size:24px; font-weight:700; }
+  .att-stat-label{ font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .att-stat-num.warn{ color:var(--warning); }
+
+  .bar-chart{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; padding:6px 18px 18px; height:140px; }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
+  .bar-val{ font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
+  .bar-fill{ width:100%; max-width:30px; border-radius:6px 6px 3px 3px; background:linear-gradient(180deg, var(--accent), var(--primary)); }
+  .bar-day{ font-size:11px; color:var(--text-muted); margin-top:8px; font-weight:500; }
+
+  /* ===================== BATCH PERFORMANCE ===================== */
+  .progress-track{ width:70px; height:6px; border-radius:999px; background:var(--table-head); overflow:hidden; display:inline-block; vertical-align:middle; margin-right:8px;}
+  .progress-fill{ height:100%; border-radius:999px; background:var(--primary); display:block; }
+  .progress-fill.warn{ background:var(--warning); }
+  .pct-text{ font-size:12.5px; font-weight:600; }
+
+  /* ===================== STUDENT ROWS ===================== */
+  .student-list{ display:flex; flex-direction:column; }
+  .student-row{ display:flex; align-items:center; gap:12px; padding:12px 18px; border-top:1px solid var(--border-soft);}
+  .student-row:first-child{ border-top:none; }
+  .student-row:hover{ background:var(--hover); }
+  .s-avatar{
+    width:34px; height:34px; border-radius:9px;
+    background:var(--table-head);
+    color:var(--text-secondary);
+    font-family:'Sora',sans-serif; font-weight:700; font-size:12.5px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .s-info{ flex:1; min-width:0; }
+  .s-name{ font-weight:600; font-size:13px; }
+  .s-batch{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
+  .s-metrics{ display:flex; gap:16px; flex-shrink:0; }
+  .s-metric{ text-align:right; }
+  .s-metric-val{ font-size:12.5px; font-weight:700; }
+  .s-metric-val.warn{ color:var(--warning); }
+  .s-metric-val.err{ color:var(--error); }
+  .s-metric-label{ font-size:10.5px; color:var(--text-muted); }
+
+  .view-all-foot{
+    display:block; text-align:center;
+    padding:12px; margin-top:2px;
+    font-size:12.5px; font-weight:600; color:var(--primary);
+    border-top:1px solid var(--border-soft);
+    text-decoration:none;
+  }
+  .view-all-foot:hover{ background:var(--hover); text-decoration:none; }
+
+  /* ===================== TEACHER ACTIVITY ===================== */
+  .check-icon{ width:17px; height:17px; }
+  .check-icon.ok{ stroke:var(--success); }
+  .check-icon.warn{ stroke:var(--warning); }
+
+  /* ===================== UPCOMING CLASSES ===================== */
+  .upcoming-daylabel{
+    font-size:11px; font-weight:700; color:var(--text-muted);
+    letter-spacing:0.03em;
+    padding:14px 18px 8px;
+  }
+  .upcoming-row{ display:flex; gap:14px; padding:11px 18px; border-top:1px solid var(--border-soft); align-items:center; }
+  .upcoming-row:hover{ background:var(--hover); }
+  .up-time{
+    width:64px; flex-shrink:0;
+    font-family:'Sora',sans-serif; font-weight:700; font-size:12.5px;
+    color:var(--primary);
+  }
+  .up-info{ flex:1; min-width:0; }
+  .up-topic{ font-weight:600; font-size:13px; }
+  .up-batch{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
+  .up-teacher{
+    font-size:11.5px; color:var(--text-secondary); font-weight:500;
+    background:var(--table-head); padding:4px 9px; border-radius:7px;
+    flex-shrink:0; white-space:nowrap;
+  }
+
+  /* ===================== RECENT ACTIVITY ===================== */
+  .activity-list{ padding:14px 18px 6px; position:relative; }
+  .activity-item{ display:flex; gap:12px; padding-bottom:18px; position:relative; }
+  .activity-item:last-child{ padding-bottom:4px; }
+  .activity-item::before{
+    content:""; position:absolute; left:5px; top:16px; bottom:-2px;
+    width:1.5px; background:var(--border);
+  }
+  .activity-item:last-child::before{ display:none; }
+  .activity-dot{
+    width:11px; height:11px; border-radius:999px;
+    background:var(--active-bg); border:2px solid var(--primary);
+    flex-shrink:0; margin-top:3px; z-index:1;
+  }
+  .activity-text{ font-size:12.5px; font-weight:500; line-height:1.45; }
+  .activity-text b{ font-weight:600; }
+  .activity-sub{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
+  .activity-time{ font-size:11px; color:var(--text-muted); margin-top:3px; }
+
+  /* ===================== QUICK ACTIONS ===================== */
+  .quick-actions{ display:flex; flex-wrap:wrap; gap:10px; padding:18px; }
+  .qa-btn{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 15px; border-radius:9px;
+    font-size:13px; font-weight:600;
+    border:1px solid var(--border);
+    background:var(--surface); color:var(--text);
+  }
+  .qa-btn svg{ width:15px; height:15px; stroke:currentColor; }
+  .qa-btn:hover{ background:var(--hover); border-color:#D6DCF2; }
+  .qa-btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  .qa-btn.primary:hover{ background:var(--primary-dark); }
+
+  /* ===================== RESPONSIVE TABLE (MOBILE CARD) ===================== */
+  @media (max-width: 720px){
+    table.responsive-table thead{ display:none; }
+    table.responsive-table, table.responsive-table tbody, table.responsive-table tr, table.responsive-table td{ display:block; width:100%; }
+    table.responsive-table tr{
+      border-top:1px solid var(--border-soft);
+      padding:12px 16px;
+    }
+    table.responsive-table tr:first-child{ border-top:none; }
+    table.responsive-table td{
+      padding:3px 0;
+      border-top:none;
+      white-space:normal;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    table.responsive-table td::before{
+      content:attr(data-label);
+      font-size:11px; font-weight:600; color:var(--text-muted);
+      flex-shrink:0;
+    }
+    table.responsive-table td.cell-actions{ justify-content:flex-start; margin-top:6px;}
+    table.responsive-table td.cell-actions::before{ display:none; }
+  }
+
+  /* ===================== RESPONSIVE BREAKPOINTS ===================== */
+  @media (max-width: 1180px){
+    .kpi-grid{ grid-template-columns:repeat(2, 1fr); }
+    .grid-2, .grid-2.reverse{ grid-template-columns:1fr; }
+  }
+
+  @media (max-width: 860px){
+    .sidebar{ transform:translateX(-100%); box-shadow:0 0 40px rgba(0,0,0,0.12);}
+    .sidebar.open{ transform:translateX(0); }
+    .sidebar-overlay.open{ display:block; }
+    .main{ margin-left:0; width:100%; }
+    .hamburger{ display:flex; }
+    .search-box{ display:none; }
+    .content{ padding:18px 16px 48px; }
+    .topbar{ padding:14px 16px; }
+    .greeting{ font-size:16px; }
+  }
+
+  @media (max-width: 600px){
+    .kpi-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; }
+    .kpi-card{ padding:13px 13px; }
+    .kpi-number{ font-size:21px; }
+    .profile-btn .p-text{ display:none; }
+    .profile-btn{ padding:5px; }
+    .dropdown-panel{ width:92vw; right:-6px; }
+    .live-stats{ flex-wrap:wrap; row-gap:10px; }
+    .quick-actions{ padding:14px; }
+    .qa-btn{ flex:1 1 auto; justify-content:center; }
+    .page-head{ margin-bottom:16px; }
+  }
+</style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'student_list' %}">Student System</a>
-            <div class="d-flex">
-                {% if user.is_authenticated %}
-                    <span class="navbar-text text-white me-3">Hello, {{ user.username }}</span>
-                    <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
 
-    <div class="container mt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
+<div class="app">
 
-        {% block content %}{% endblock %}
+  <div class="sidebar-overlay" id="overlay"></div>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">L</div>
+      <div>
+        <div class="brand-text">Learnix LMS</div>
+        <div class="brand-sub">{{ request.user.get_role_display|default:"User" }}</div>
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <nav class="sidebar-scroll">
+      <div class="nav-group">
+        <div class="nav-group-label">MAIN</div>
+        <a class="nav-item active" href="{% url 'student_list' %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+          Dashboard
+        </a>
+      </div>
+
+      {% if request.user.is_superuser or request.user.role.name == 'Super Admin' or request.user.role.name == 'Admin' %}
+      <div class="nav-group">
+        <div class="nav-group-label">MANAGEMENT</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Students
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+          Teachers
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          Courses
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+          Batches
+        </a>
+      </div>
+      {% endif %}
+
+      <div class="nav-group">
+        <div class="nav-group-label">TRAINING</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Schedule
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m23 7-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2.2"/></svg>
+          Live Classes
+          <span class="badge-dot">5</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">CONTENT</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8Z"/></svg>
+          Recordings
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6"/></svg>
+          Notes &amp; Resources
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1.2"/><path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v15A1.5 1.5 0 0 0 5.5 22h13a1.5 1.5 0 0 0 1.5-1.5v-15A1.5 1.5 0 0 0 18.5 4H15"/><path d="M9 12h6M9 16h6"/></svg>
+          Assignments
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Assessments
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">TRACKING</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          Attendance
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12.5" y="8" width="3" height="10"/><rect x="18" y="5" width="3" height="13"/></svg>
+          Performance
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">COMMUNICATION</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">REPORTS</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>
+          Reports
+        </a>
+      </div>
+
+      {% if request.user.is_superuser or request.user.role.name == 'Super Admin' or request.user.role.name == 'Admin' %}
+      <div class="nav-group">
+        <div class="nav-group-label">SYSTEM</div>
+        <a class="nav-item" href="{% url 'role_list' %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/></svg>
+          Roles
+        </a>
+        <a class="nav-item" href="{% url 'users_roles' %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+          Activity Logs
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.4.66.73.83.24.13.5.2.78.2H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+          Settings
+        </a>
+      </div>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="footer-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+      <a class="footer-item" href="{% url 'logout' %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+
+    <!-- TOP HEADER -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div>
+          <div class="greeting">Hello, {{ request.user.username|default:"Guest" }}</div>
+          <div class="greeting-date">{% now "l, d F Y" %}</div>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Search...">
+        </div>
+
+        <div class="dropdown-wrap">
+          <button class="icon-btn" id="notifBtn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <div class="dropdown-panel" id="notifPanel">
+            <div class="dropdown-head">Notifications <span class="count">0 new</span></div>
+            <a href="#" class="dropdown-foot">View all notifications</a>
+          </div>
+        </div>
+
+        <div class="dropdown-wrap">
+          <button class="profile-btn" id="profileBtn">
+            <div class="avatar">{{ request.user.username|make_list|first|upper|default:"U" }}</div>
+            <div class="p-text">
+              <div class="p-name">{{ request.user.username|default:"Guest" }}</div>
+              <div class="p-role">{{ request.user.get_role_display|default:"User" }}</div>
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="dropdown-panel profile-menu" id="profilePanel">
+            <a class="profile-menu-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My Profile
+            </a>
+            <a class="profile-menu-item" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.4.66.73.83.24.13.5.2.78.2H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+              Settings
+            </a>
+            <div class="profile-menu-divider"></div>
+            <a class="profile-menu-item" href="{% url 'logout' %}">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+  function openSidebar(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+  function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+
+  if(hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
+  if(overlay) overlay.addEventListener('click', closeSidebar);
+
+  // Dropdowns
+  function setupDropdown(btnId, panelId){
+    const btn = document.getElementById(btnId);
+    const panel = document.getElementById(panelId);
+    if(btn && panel){
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-panel.open').forEach(p => p.classList.remove('open'));
+        if(!isOpen) panel.classList.add('open');
+      });
+    }
+  }
+  setupDropdown('notifBtn', 'notifPanel');
+  setupDropdown('profileBtn', 'profilePanel');
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown-panel.open').forEach(p => p.classList.remove('open'));
+  });
+
+  // Close mobile sidebar on nav click
+  document.querySelectorAll('.nav-item, .footer-item').forEach(el => {
+    el.addEventListener('click', () => { if(window.innerWidth <= 860) closeSidebar(); });
+  });
+</script>
+
 </body>
 </html>

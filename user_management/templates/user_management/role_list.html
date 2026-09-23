@@ -1,0 +1,72 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Roles Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="h4 mb-1">Roles Management</h2>
+        <p class="text-muted small mb-0">Configure access levels, permissions, and roles for users.</p>
+    </div>
+    <a href="{% url 'role_add' %}" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg"></i> Create Role
+    </a>
+</div>
+
+{% if messages %}
+<div class="mb-3">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show py-2" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+            <h5 class="mb-1 fw-bold">All Roles</h5>
+        </div>
+        <div class="btn-group border rounded" role="group">
+            <a href="{% url 'users_roles' %}" class="btn btn-sm btn-light border-end text-muted fw-semibold">Users</a>
+            <a href="{% url 'role_list' %}" class="btn btn-sm btn-white active text-primary fw-semibold">Roles</a>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="fw-semibold">Role Name</th>
+                        <th class="fw-semibold">Description</th>
+                        <th class="fw-semibold">Users Assigned</th>
+                        <th class="fw-semibold">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role in roles %}
+                    <tr>
+                        <td class="fw-bold">{{ role.name }}</td>
+                        <td class="text-muted small">{{ role.description|truncatechars:50 }}</td>
+                        <td class="text-muted small"><span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2">{{ role.users.count }} users</span></td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'role_edit' role.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="{% url 'role_delete' role.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No roles found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
